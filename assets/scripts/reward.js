@@ -88,18 +88,30 @@ function generateData(chart, loss = 0.5) {
 	return data;
 }
 
-Chart.pluginService.register({
-	beforeInit: function (chart) {generateData(chart)}, 
-});
-
 function createChart(ctx, loss, stochastic = true) {
-	var emptyData;
-	if (stochastic) {
-		emptyData = prepareStochData();
-	}
-	else {
-		emptyData = prepareNonStochData();
-	}
+	var emptyData = (stochastic) ? prepareStochData() : prepareNonStochData();
+	const chartTitle = (stochastic) ? "Stochastic reward":"Non-stochastic reward";
+	
+	const chartDatagenerator = {
+		id: 'chartDatagenerator',
+		beforeInit: function (chart) {
+			generateData(chart);
+		}
+	};
+	
+	const chartAreaBorder = {
+		id: 'chartAreaBorder',
+		beforeDraw(chart, args, options) {
+			const {ctx, chartArea: {left, top, width, height}} = chart;
+			ctx.save();
+			ctx.strokeStyle = options.borderColor;
+			ctx.lineWidth = options.borderWidth;
+			ctx.setLineDash(options.borderDash || []);
+			ctx.lineDashOffset = options.borderDashOffset;
+			ctx.strokeRect(left, top, width, height);
+			ctx.restore();
+		}
+	};
 	
 	var chart = new Chart(ctx, {
 	type: 'line',
@@ -107,63 +119,57 @@ function createChart(ctx, loss, stochastic = true) {
 	options: {
 		responsive: false,
 		scales: {
-			xAxes: [{
-				display: true,
+			xAxis: {
+				title: {
+					display: true,
+					text: 'Pull',
+				},
+				// min: -1, max: 1,
 				ticks: {
 					// beginAtZero: true,
 					maxTicksLimit: 5,
 					// steps: 5,
 					// stepValue: 5,
-					// min: -50,
-					// max: 75
 				},
-				scaleLabel: {
-					display: true,
-					labelString: 'Pull'
-				}
-				}, {
-				position: 'top',
-				ticks: {
-					display: false
+				grid: {
+					// display: false,
+					// drawBorder: false,
+					// drawOnChartArea: true,
 				},
-				gridLines: {
+			},
+			yAxis: {
+				title: {
 					display: true,
-					drawOnChartArea: false,
-					drawTicks: false
-				}
-			}],
-			yAxes: [{
-				display: true,
+					text: 'Loss',
+				},
+				min: -0.5, max: 3,
 				ticks: {
-					beginAtZero: true,
+					// beginAtZero: true,
 					// steps: 10,
 					// stepValue: 5,
-					min: -0.5,
-					max: 3
 				},
-				scaleLabel: {
-					display: true,
-					labelString: 'Loss'
-				}
-				}, {
-				position: 'right',
-				ticks: {
-					display: false
+				grid: {
+					// display: false,
+					// drawBorder: false,
+					// drawOnChartArea: true,
 				},
-				gridLines: {
-					display: true,
-					drawOnChartArea: false,
-					drawTicks: false
-				}
-			}],
-		},
-		title: {
-			display: true,
+			},
 		}
 	},
+	plugins: {
+		title: {
+			display: true,
+			text: chartTitle,
+		},
+		chartAreaBorder: {
+			borderColor: 'black',
+			borderWidth: 2,
+			// borderDash: [5, 5],
+			// borderDashOffset: 2,
+		},
+	},
+	plugins: [chartDatagenerator, chartAreaBorder],
 	});
-	
-	chart.options.title.text = (stochastic) ? "Stochastic reward":"Non-stochastic reward";
-	
+		
 	return chart;
 }

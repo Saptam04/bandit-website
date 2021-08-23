@@ -1,25 +1,9 @@
-const actions = [
-{
-	handler(chart) {
-		const data = chart.data;
-		const dsColor = Utils.namedColor(chart.data.datasets.length);
-		const newDataset = {
-			label: 'Hyper ' + (data.datasets.length + 1),
-			backgroundColor: Utils.transparentize(dsColor, 0.5),
-			borderColor: dsColor,
-			data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
-		};
-		chart.data.datasets.push(newDataset);
-		chart.update();
-	}
-}]
-
 function prepareHyperData(limLoss) {
 	var data = {
 		labels: xs,
 		datasets: [{
 			type: 'scatter',
-			label: "Hyper 1",
+			label: "Configuration 1",
 			function: function(x, limLoss = 0.5) { return (limLoss + (Math.exp(0.5 - (x / 15)))) },
 			data: [],
 			borderColor: NAMED_COLORS[0],
@@ -51,71 +35,76 @@ function generateHyperData(chart, loss = 0.5) {
 function createHyperChart(ctx, limLoss) {
 	var emptyData = prepareHyperData(limLoss);
 	
+	const chartDatagenerator = {
+		id: 'chartDatagenerator',
+		beforeInit: function (chart) {
+			generateData(chart);
+		}
+	};
+	
+	const chartAreaBorder = {
+		id: 'chartAreaBorder',
+		beforeDraw(chart, args, options) {
+			const {ctx, chartArea: {left, top, width, height}} = chart;
+			ctx.save();
+			ctx.strokeStyle = options.borderColor;
+			ctx.lineWidth = options.borderWidth;
+			ctx.setLineDash(options.borderDash || []);
+			ctx.lineDashOffset = options.borderDashOffset;
+			ctx.strokeRect(left, top, width, height);
+			ctx.restore();
+		}
+	};
+	
 	var chart = new Chart(ctx, {
 	type: 'line',
 	data: emptyData,
 	options: {
 		responsive: false,
 		scales: {
-			xAxes: [{
-				display: true,
+			xAxis: {
+				title: {
+					display: true,
+					text: 'Pull',
+				},
 				ticks: {
-					beginAtZero: true,
+					display: false,
+					// beginAtZero: true,
 					maxTicksLimit: 5,
 					// steps: 5,
 					// stepValue: 5,
-					// min: -5,
-					// max: 2.5
-				},
-				scaleLabel: {
-					display: true,
-					labelString: 'Pull'
 				}
-			}, {
-				position: 'top',
-				ticks: {
-					display: false
-				},
-				gridLines: {
+			},
+			yAxis: {
+				title: {
 					display: true,
-					drawOnChartArea: false,
-					drawTicks: false
-				}
-			}],
-			yAxes: [{
-				display: true,
+					text: 'Loss',
+				},
+				min: -0.5,
 				ticks: {
-					beginAtZero: true,
+					display: false,
+					// beginAtZero: true,
 					// steps: 10,
 					// stepValue: 5,
-					min: -0.5,
-					// max: 2.5
 				},
-				scaleLabel: {
-					display: true,
-					labelString: 'Loss'
-				}
-			}, {
-				position: 'right',
-				ticks: {
-					display: false
-				},
-				gridLines: {
-					display: true,
-					drawOnChartArea: false,
-					drawTicks: false
-				}
-			}],
+			},
 		},
 		elements:{
 			point: {
 				radius: 2
 			}
-		}
-	}
+		},
+		plugins: {
+			chartAreaBorder: {
+				borderColor: 'black',
+				borderWidth: 2,
+				// borderDash: [5, 5],
+				// borderDashOffset: 2,
+			},
+		},
+	},
+	plugins: [chartDatagenerator, chartAreaBorder],
 	});
-	
-	// chart.options.title.text = (stochastic) ? "Stochastic reward":"Non-stochastic reward";
 	
 	return chart;
 }
@@ -127,7 +116,7 @@ function addHyperData(chart, limLoss) {
 		
 		const newDataset = {
 			type: 'scatter',
-			label: 'Hyper ' + (chart.data.datasets.length + 1),
+			label: 'Configuration ' + (chart.data.datasets.length + 1),
 			// backgroundColor: Utils.transparentize(dsColor, 0.5),
 			borderColor: NAMED_COLORS[chart.data.datasets.length],
 			backgroundColor: NAMED_COLORS[chart.data.datasets.length],
