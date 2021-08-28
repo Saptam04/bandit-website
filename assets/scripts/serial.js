@@ -1,36 +1,37 @@
-function prepareRandomData() {
+function prepareSerialData(limLoss) {
 	var data = {
-		datasets: [{
-			label: "Sample",
-			idx: 0,
-			data: [],
-			borderColor: NAMED_COLORS[0],
-			backgroundColor: NAMED_COLORS[0],
-		}]
+		labels: xs,
+		datasets: []
 	}
 
 	return data;
 }
 
-function prepareGridData() {
-	var data = {
-		datasets: [{
-			label: "Sample",
-			idx: 0,
-			maxRow: 3, 
-			maxCol: 5,
-			data: [],
-			borderColor: NAMED_COLORS[0],
-			backgroundColor: NAMED_COLORS[0],
-		}]
-	}
+function generateSerialData(chart, loss = 0.5) {
+	var data = chart.config.data;
+	data.datasets.forEach(dataset => {dataset.data = [];});
 
+	for (var i = 0; i < data.datasets.length; i++) {
+		for (var j = 0; j < xs.length; j += step) {
+			var func = data.datasets[i].function,
+				x = xs[j],
+				y = func(x, loss);
+			data.datasets[i].data.push({x, y});
+		}
+	}
+		
 	return data;
 }
 
-function createSerialChart(ctx, grid) {
-	var emptyData = (grid) ? prepareGridData() : prepareRandomData();
-	const chartTitle = (grid) ? "Grid search" : "Random search";
+function createSerialChart(ctx, limLoss) {
+	var emptyData = prepareSerialData(limLoss);
+	
+	const chartDatagenerator = {
+		id: 'chartDatagenerator',
+		beforeInit: function (chart) {
+			generateData(chart);
+		}
+	};
 	
 	const chartAreaBorder = {
 		id: 'chartAreaBorder',
@@ -47,7 +48,7 @@ function createSerialChart(ctx, grid) {
 	};
 	
 	var chart = new Chart(ctx, {
-	type: 'scatter',
+	type: 'line',
 	data: emptyData,
 	options: {
 		responsive: false,
@@ -55,113 +56,87 @@ function createSerialChart(ctx, grid) {
 			xAxis: {
 				title: {
 					display: true,
-					text: 'x1',
+					text: 'Pull',
 				},
-				min: -1, max: 1,
 				ticks: {
 					display: false,
-				},
-				grid: {
-					display: false,
-					drawBorder: false,
-					drawOnChartArea: true,
-				},
+					// beginAtZero: true,
+					maxTicksLimit: 5,
+					// steps: 5,
+					// stepValue: 5,
+				}
 			},
 			yAxis: {
 				title: {
 					display: true,
-					text: 'x2',
+					text: 'Loss',
 				},
-				min: -1, max: 1,
+				min: -0.5,
 				ticks: {
 					display: false,
-				},
-				grid: {
-					display: false,
-					drawBorder: false,
-					drawOnChartArea: true,
+					// beginAtZero: true,
+					// steps: 10,
+					// stepValue: 5,
 				},
 			},
 		},
 		elements:{
 			point: {
-				pointStyle: "crossRot",
-				radius: 4,
+				radius: 2
 			}
 		},
 		plugins: {
+			title: {
+				display: true,
+				text: "Serial evaluation"
+			},
 			chartAreaBorder: {
 				borderColor: 'black',
 				borderWidth: 2,
 				// borderDash: [5, 5],
 				// borderDashOffset: 2,
 			},
-			// chartDatagenerator: false,
-			title: {
-				display: true,
-				text: chartTitle,
-			},
 		},
 	},
-	plugins: [chartAreaBorder],
+	plugins: [chartDatagenerator, chartAreaBorder],
 	});
-		
+	
 	return chart;
 }
 
-function selectNextHyperparameterRandom(chart) {
-	var curIndex = chart.data.datasets[0].idx;
-	
-	if (curIndex < numSamples) {
-		const minX1 = chart.options.scales.xAxis.min,
-			  maxX1 = chart.options.scales.xAxis.max;
-		const minX2 = chart.options.scales.yAxis.min,
-			  maxX2 = chart.options.scales.yAxis.max;
+function addHyperData(chart, limLoss) {
+	if (chart.data.datasets.length < numConfigurations) {
+		var firstCoef = randomInRange(0.1, 1.5);
+		var secondCoef = randomInRange(5, 30);
 		
-		const x = randomInRange(0.8 * minX1, 0.8 * maxX1);
-		const y = randomInRange(0.8 * minX2, 0.8 * maxX2);
+		const newDataset = {
+			type: 'scatter',
+			label: 'Configuration ' + (chart.data.datasets.length + 1),
+			// backgroundColor: Utils.transparentize(dsColor, 0.5),
+			borderColor: NAMED_COLORS[chart.data.datasets.length],
+			backgroundColor: NAMED_COLORS[chart.data.datasets.length],
+			function: function(x) { return (limLoss + (Math.exp(firstCoef - (x / secondCoef)))) },
+			data: [],
+			pointStyle: "circle",
+		};
 		
-		chart.data.datasets[0].data.push({x, y});
-		chart.data.datasets[0].idx += 1;
+		for (var j = 0; j < xs.length; j += step) {
+			var func = newDataset.function,
+				x = xs[j],
+				y = func(x);
+			newDataset.data.push({x, y});
+		}
+		
+		chart.data.datasets.push(newDataset);
 		chart.update();
 	}
 }
 
-function selectNextHyperparameterGrid(chart) {
-	var curIndex = chart.data.datasets[0].idx;
-	const maxRow = chart.data.datasets[0].maxRow,
-		  maxCol = chart.data.datasets[0].maxCol;
-
-	if (curIndex < (maxRow * maxCol)) {
-		var row = Math.floor(curIndex / maxCol);
-		var col = Math.floor(curIndex % maxCol);
-		
-		const minX1 = chart.options.scales.xAxis.min,
-			  maxX1 = chart.options.scales.xAxis.max;
-		const minX2 = chart.options.scales.yAxis.min,
-			  maxX2 = chart.options.scales.yAxis.max;
-		
-		const x = minX1 + (((maxX1 - minX1) / (maxCol + 1)) * (col + 1));
-		const y = maxX2 - (((maxX2 - minX2) / (maxRow + 1)) * (row + 1));
-		
-		chart.data.datasets[0].data.push({x, y});
-		chart.data.datasets[0].idx += 1;
+function clearSerialChart(chart) {
+	if (chart.data.datasets.length > 0) {
+		chart.data = prepareSerialData();
 		chart.update();
 	}
 }
-
-function clearChart(chart) {
-	chart.data.datasets[0].data = [];
-	chart.data.datasets[0].idx = 0;
-	chart.update();
-}
-
-
-
-
-
-
-
-
 
 

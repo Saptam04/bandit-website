@@ -90,7 +90,7 @@ function generateData(chart, loss = 0.5) {
 
 function createChart(ctx, loss, stochastic = true) {
 	var emptyData = (stochastic) ? prepareStochData() : prepareNonStochData();
-	const chartTitle = (stochastic) ? "Stochastic reward":"Non-stochastic reward";
+	var chartTitle = (stochastic) ? "Stochastic reward" : "Non-stochastic reward";
 	
 	const chartDatagenerator = {
 		id: 'chartDatagenerator',
@@ -154,22 +154,22 @@ function createChart(ctx, loss, stochastic = true) {
 					// drawOnChartArea: true,
 				},
 			},
-		}
-	},
-	plugins: {
-		title: {
-			display: true,
-			text: chartTitle,
 		},
-		chartAreaBorder: {
-			borderColor: 'black',
-			borderWidth: 2,
-			// borderDash: [5, 5],
-			// borderDashOffset: 2,
+		plugins: {
+			title: {
+				display: true,
+				text: chartTitle,
+			},
+			chartAreaBorder: {
+				borderColor: 'black',
+				borderWidth: 2,
+				// borderDash: [5, 5],
+				// borderDashOffset: 2,
+			},
 		},
 	},
 	plugins: [chartDatagenerator, chartAreaBorder],
 	});
-		
+	
 	return chart;
 }
