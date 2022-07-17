@@ -1,31 +1,394 @@
----
-layout: null
-nav_exclude: true
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>{{ site.title | xml_escape }}</title>
-    <description>{{ site.description | xml_escape }}</description>
-    <link>{{ site.url }}{{ site.baseurl }}/</link>
-    <atom:link href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" rel="self" type="application/rss+xml"/>
-    <pubDate>{{ site.time | date_to_rfc822 }}</pubDate>
-    <lastBuildDate>{{ site.time | date_to_rfc822 }}</lastBuildDate>
-    <generator>Jekyll v{{ jekyll.version }}</generator>
-    {% for post in site.posts limit:10 %}
+    <title>Bandits Ahead!</title>
+    <description>Beware of bandits</description>
+    <link>/banditsahead/</link>
+    <atom:link href="/banditsahead/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sun, 17 Jul 2022 08:47:09 +0000</pubDate>
+    <lastBuildDate>Sun, 17 Jul 2022 08:47:09 +0000</lastBuildDate>
+    <generator>Jekyll v4.2.2</generator>
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
-        <description>{{ post.content | xml_escape }}</description>
-        <pubDate>{{ post.date | date_to_rfc822 }}</pubDate>
-        <link>{{ post.url | prepend: site.baseurl | prepend: site.url }}</link>
-        <guid isPermaLink="true">{{ post.url | prepend: site.baseurl | prepend: site.url }}</guid>
-        {% for tag in post.tags %}
-        <category>{{ tag | xml_escape }}</category>
-        {% endfor %}
-        {% for cat in post.categories %}
-        <category>{{ cat | xml_escape }}</category>
-        {% endfor %}
+        <title>Non-stochastic Best Arm Identification and Hyperparameter Optimization</title>
+        <description>&lt;p&gt;How can you find the optimal value of the hyperparameter of your model? This paper addresses this problem and introduces a novel framework for modelling this task. The authors use the well-known Successive Halving algorithm for producing optimal/near-optimal solution. The paper include some nice theoretical guarantees as well as empirical results in favour of the algorithm.
+&lt;!--more--&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;table-id-1&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;table-id-1&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Table 1: Paper summary. &lt;/span&gt;&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper&quot;&gt;
+&lt;table class=&quot;booktabs&quot; style=&quot;margin: 0px auto;&quot;&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Author(s)&lt;/td&gt; &lt;td&gt;Kevin Jamieson, Ameet Talwalkar&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Source&lt;/td&gt; &lt;td&gt;&lt;a href=&quot;https://arxiv.org/abs/1502.07943&quot;&gt;https://arxiv.org/abs/1502.07943&lt;/a&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+		&lt;tr&gt;
+			&lt;td&gt;Danger level&lt;/td&gt; &lt;td&gt;☠️ ☠️ &lt;span style=&quot;color:gray&quot;&gt;☠ ☠ ☠&lt;/span&gt;&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;contributions&quot;&gt;Contributions&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Introduction of the non-stochastic setting in the best arm identification problem.&lt;/li&gt;
+  &lt;li&gt;Analysis of the Successive Halving algorithm in the non-stochastic setting.&lt;/li&gt;
+  &lt;li&gt;Modelling of the hyperparameter optimisation as a non-stochastic best arm identification problem.&lt;/li&gt;
+  &lt;li&gt;Empirical proof of efficiency of Successive Halving in hyperparameter optimisation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;model-parameter-and-model-hyperparameter&quot;&gt;Model parameter and model hyperparameter&lt;/h2&gt;
+
+&lt;p&gt;Consider this scenario: given two models, \(\mathcal{M}_{1}\) and \(\mathcal{M}_{2}\), what would differentiate them? What makes a model different from another? For the moment, assume that we are dealing with the same kind of models (say, \(\mathcal{M}_{1}\) and \(\mathcal{M}_{2}\) are both neural networks or both decision trees but not one neural network and the other decision tree).&lt;/p&gt;
+
+&lt;p&gt;The answer is their parameters and hyperparameters. For ANN, the parameters are the set of weights; the hyperparameters are the structure of the network, the number of neurons in each layer, the choice of activation function etc. For decision tree, the parameters are the set of split points; the hyperparameters are the criterion, maximum depth, maximum number of features etc.&lt;/p&gt;
+
+&lt;h3 id=&quot;parameter-vs-hyperparameter&quot;&gt;Parameter vs. hyperparameter&lt;/h3&gt;
+
+&lt;p&gt;That said, there is one crucial difference between parameters and hyperparameters. Given the data, the optimal value of the parameters can be &lt;em&gt;learned&lt;/em&gt; from the data. Hyperparameters, on the other hand, can’t be learned &lt;em&gt;directly&lt;/em&gt;.&lt;/p&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/chart.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;../../assets/scripts/utils.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;../../assets/scripts/reward.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;../../assets/scripts/serial.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;../../assets/scripts/search.js&quot;&gt;&lt;/script&gt;
+
+&lt;script src=&quot;../../assets/scripts/parallel.js&quot;&gt;&lt;/script&gt;
+
+&lt;div id=&quot;canvasContainer1&quot;&gt;
+	&lt;canvas id=&quot;canvasSearchRandom&quot; height=&quot;300&quot; style=&quot;float:left; width:30%;&quot;&gt;&lt;/canvas&gt;
+	&lt;canvas id=&quot;canvasSearchGrid&quot; height=&quot;300&quot; style=&quot;float:left; width:30%;&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;label for=&quot;tool-id-1&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tool-id-1&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Searching for the optimal hyperparameter configuration across different combinations of values for two hyperparameters: \(x_{1}\) and \(x_{2}\). Random search and grid search are two popular search algorithms. Check out the Wikipedia page of &lt;a href=&quot;https://en.wikipedia.org/wiki/Hyperparameter_optimization&quot;&gt;hyperparameter optimisation&lt;/a&gt;, it’s pretty good. &lt;/span&gt;&lt;/p&gt;
+
+&lt;div id=&quot;buttonContainer1&quot; height=&quot;300&quot; style=&quot;width:60%; display:flex; align-items:center;&quot;&gt;
+	&lt;button id=&quot;buttonSearchNext&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:auto; margin-right:10px;&quot;&gt;Next&lt;br /&gt;configuration&lt;/button&gt;
+	&lt;button id=&quot;buttonSearchClear&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:10px; margin-right:auto;&quot;&gt;Clear&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+	const ctxRandom = document.getElementById(&apos;canvasSearchRandom&apos;).getContext(&apos;2d&apos;);
+	const ctxGrid   = document.getElementById(&apos;canvasSearchGrid&apos;).getContext(&apos;2d&apos;);
+	
+	var chartRandom = createSearchChart(ctxRandom, false);
+	var chartGrid   = createSearchChart(ctxGrid, true);
+	
+	const numSamples = 15;
+	const xmin = 1, 
+		  xmax = 50,
+		  step = 1;
+	var limLoss = 0.5;
+	var xs = [];
+	for (var i = xmin; i &lt;= xmax; i++) {
+		xs.push(i);
+	}
+	
+	const buttonSearchNext = document.getElementById(&quot;buttonSearchNext&quot;);
+	buttonSearchNext.addEventListener(&apos;click&apos;, function () {
+		selectNextHyperparameterRandom(chartRandom);
+		selectNextHyperparameterGrid(chartGrid);
+	}, false);
+	
+	const buttonSearchClear = document.getElementById(&quot;buttonSearchClear&quot;);
+	buttonSearchClear.addEventListener(&apos;click&apos;, function () {
+		clearChart(chartRandom);
+		clearChart(chartGrid);
+	}, false);
+&lt;/script&gt;
+
+&lt;h3 id=&quot;serial-vs-parallel&quot;&gt;Serial vs. parallel&lt;/h3&gt;
+
+&lt;p&gt;Say you want to know the best &lt;a href=&quot;https://en.wikipedia.org/wiki/Activation_function&quot;&gt;activation function&lt;/a&gt; for your model. Again, say there are four alternatives in your hand: sigmoid, tanh, ReLU, and ELU. The exact functions are not super-important here, instead the number of available choices are. As any mathematician would say, we better put those four &lt;em&gt;things&lt;/em&gt; in a set and give it a nice name.&lt;/p&gt;
+
+&lt;p&gt;Formally, we say that each hyperparameter has an associated hyperparameter space \(\mathcal{H}\), where \(\mathcal{H} = \{ h_{1}, h_{2}, \dots, h_{n} \}\)&lt;label for=&quot;sn-id-1&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-1&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;Each hyperparameter choice \(h \in \mathcal{H}\) is often called a hyperparameter configuration. &lt;/span&gt; (for the entirety of this post we assume that \(\mathcal{H}\) is finite). For learning rate, for example, the hyperparameter space is \(\mathbb{R}_{&amp;gt;0}\) (the set of positive numbers). There are at least two different ways in which you can handle the task of finding out the best hyperparameter configuration: &lt;em&gt;serial&lt;/em&gt; and &lt;em&gt;parallel&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Under the &lt;em&gt;serial&lt;/em&gt; setting we have the following workflow. Choose a suitable hyperparameter configuration from \(\mathcal{H}\), run it for an &lt;em&gt;appropriate&lt;/em&gt; amount of time to get a good estimate of the loss, and then depending on this loss choose a new hyperparameter configuration from \(\mathcal{H}\). Continue this as long as time permits.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;tool-id-3&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tool-id-3&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;In the &lt;em&gt;serial&lt;/em&gt; mode, we consider one configuration at a time. Once we are done with it, go for the next one. &lt;/span&gt;&lt;/p&gt;
+
+&lt;div id=&quot;canvasContainer2&quot;&gt;
+	&lt;canvas id=&quot;canvasSerial&quot; height=&quot;400&quot; style=&quot;width:50%;&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;buttonContainer3&quot; height=&quot;300&quot; style=&quot;width:50%; display:flex; align-items:center;&quot;&gt;
+	&lt;button id=&quot;buttonSerialNext&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:auto; margin-right:10px;&quot;&gt;Next&lt;br /&gt;configuration&lt;/button&gt;
+	&lt;button id=&quot;buttonSerialClear&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:10px; margin-right:auto;&quot;&gt;Clear&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+	const ctxSerial = document.getElementById(&apos;canvasSerial&apos;).getContext(&apos;2d&apos;);
+	chartSerial = createSerialChart(ctxSerial);
+	const numConfigurations = 4;
+	
+	const buttonSerialNext = document.getElementById(&quot;buttonSerialNext&quot;);
+	buttonSerialNext.addEventListener(&apos;click&apos;, function () {
+		addHyperData(chartSerial, Math.random());
+	}, false);
+	
+	const buttonSerialClear = document.getElementById(&quot;buttonSerialClear&quot;);
+	buttonSerialClear.addEventListener(&apos;click&apos;, function () {
+		clearSerialChart(chartSerial);
+	}, false);
+&lt;/script&gt;
+
+&lt;p&gt;The &lt;em&gt;parallel&lt;/em&gt; setting is slightly different. Here we start with &lt;em&gt;all&lt;/em&gt; the hyperparameter configurations i.e. all \(h \in \mathcal{H}\). We allot a certain amount of time for the configurations, get an estimate of the &lt;em&gt;partial&lt;/em&gt; loss after the allotted time, take some actions if needed, and then allot more time to the configurations. Continue this as long as time permits.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;tool-id-4&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tool-id-4&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;In the &lt;em&gt;parallel&lt;/em&gt; mode, we consider &lt;em&gt;all&lt;/em&gt; the configurations at the same time. By the way, we do not necessarily need to &lt;em&gt;process&lt;/em&gt; them at the same time (it would put a lot of burden on the hardware if the number of configurations is huge); we can do so serially as well. The point is that we &lt;em&gt;allot&lt;/em&gt; the budget at the same time. &lt;/span&gt;&lt;/p&gt;
+
+&lt;canvas id=&quot;canvasParallel&quot; height=&quot;400&quot; style=&quot;width:50%;&quot;&gt;&lt;/canvas&gt;
+
+&lt;div id=&quot;buttonContainer2&quot; height=&quot;300&quot; style=&quot;width:50%; display:flex; align-items:center;&quot;&gt;
+	&lt;button id=&quot;buttonParallelAllot&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:auto; margin-right:10px;&quot;&gt;Allot&lt;br /&gt;more budget&lt;/button&gt;
+	&lt;button id=&quot;buttonParallelClear&quot; type=&quot;button&quot; style=&quot;height:40px; width:120px; margin-left:10px; margin-right:auto;&quot;&gt;Clear&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+	const ctxParallel = document.getElementById(&apos;canvasParallel&apos;).getContext(&apos;2d&apos;);
+	chartParallel = createParallelChart(ctxParallel);
+	const numPhases = 4;
+	
+	const buttonParallelAllot = document.getElementById(&quot;buttonParallelAllot&quot;);
+	buttonParallelAllot.addEventListener(&apos;click&apos;, function () {
+		allotBudget(chartParallel);
+	}, false);
+	
+	const buttonParallelClear = document.getElementById(&quot;buttonParallelClear&quot;);
+	buttonParallelClear.addEventListener(&apos;click&apos;, function () {
+		clearParallelChart(chartParallel);
+	}, false);
+&lt;/script&gt;
+
+&lt;p&gt;The difference is pretty obvious if we take a look at the plots–&lt;em&gt;serial&lt;/em&gt; evaluation progresses &lt;em&gt;vertically&lt;/em&gt; whereas the &lt;em&gt;parallel&lt;/em&gt; evaluation progresses &lt;em&gt;horizontally&lt;/em&gt;. This post is entirely dedicated to this &lt;em&gt;parallel&lt;/em&gt; setting.&lt;/p&gt;
+
+&lt;h3 id=&quot;hyperparameter-optimisation&quot;&gt;Hyperparameter optimisation&lt;/h3&gt;
+
+&lt;p&gt;Hyperparameter optimisation is therefore concerned about finding out the optimal value of the hyperparameter for which the model loss is minimum. Obviously, we have the brute-force approach: starting with a total budget of \(B\) units (minutes, hours, clock-cycles etc.) and \(n\) hyperparameter choices, allocate \(\frac{B}{n}\) units of resource to all the choices. Finally return the hyperparameter with the lowest loss. This is often called the uniform allocation strategy.&lt;/p&gt;
+
+&lt;p&gt;But can we do better? Before we answer this question, let’s talk a little bit about slot machines and gambling.&lt;/p&gt;
+
+&lt;h2 id=&quot;multi-armed-bandit-and-best-arm-identification&quot;&gt;Multi-armed bandit and best arm identification&lt;/h2&gt;
+
+&lt;p&gt;The problem setting of &lt;a href=&quot;https://en.wikipedia.org/wiki/Multi-armed_bandit&quot;&gt;multi-armed bandit&lt;/a&gt; (MAB) is extremely simple: a gambler enters a room with multiple slot machines and (s)he has a fixed, limited amount of money/chances. (S)he has to play the slot machines in such a way that her/his gain is maximised.&lt;/p&gt;
+
+&lt;p&gt;The only problem is that (s)he has no idea which machines are good and which are bad. Good ones yield rewards more easily compared to the bad ones. Thus (s)he has to use trial-and-error to gain knowledge about the machines. Contrary to the simplicity of the problem, good/great solutions are not that straightforward.&lt;/p&gt;
+
+&lt;p&gt;MAB has a long history, arguably starting in 1933 with the &lt;a href=&quot;https://www.jstor.org/stable/2332286&quot;&gt;classic paper of Thompson&lt;/a&gt;&lt;label for=&quot;sn-id-2&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-2&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;Quite strangely, Thompson sampling, as it’s known these days, turned out to be quite hard to analyse theoretically (fun fact: the proof that Thompson sampling is asymptotically optimal came out quite recently (2012-13) in a series of papers (&lt;a href=&quot;#1&quot;&gt;[1]&lt;/a&gt;, &lt;a href=&quot;#2&quot;&gt;[2]&lt;/a&gt;, and &lt;a href=&quot;#6&quot;&gt;[6]&lt;/a&gt;), so that’s almost 80 years). &lt;/span&gt;. There are many good, quick introductory resources available online–&lt;a href=&quot;https://youtu.be/bkw6hWvh_3k&quot;&gt;this video&lt;/a&gt; by Robert C. Gray (aka Academic Gamer) is a great starting point. If you want something more in-depth, take a look at &lt;a href=&quot;https://lilianweng.github.io/lil-log/2018/01/23/the-multi-armed-bandit-problem-and-its-solutions.html&quot;&gt;this excelent post&lt;/a&gt; by Lilian Weng.&lt;/p&gt;
+
+&lt;p&gt;Let us now shift our attention towards a slightly different, yet related problem–the best-arm identification problem&lt;label for=&quot;sn-id-3&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-3&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;It’s also known as the pure exploration problem in the bandit literature. &lt;/span&gt;. Here we simply want to identify the &lt;em&gt;best&lt;/em&gt; arm&lt;label for=&quot;sn-id-4&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-4&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;We use the terms &lt;em&gt;arm&lt;/em&gt; and &lt;em&gt;slot machine&lt;/em&gt; interchangeably. &lt;/span&gt;. The precise definition of &lt;em&gt;best&lt;/em&gt;, as we’re going to see next, is dependent on the problem setting.&lt;/p&gt;
+
+&lt;p&gt;So after \(T\) rounds, our agent is going to be judged based on the quality of the slot machine that it recommends. In practice, though, we deal with a slightly more generalised problem: instead of a single recommendation after \(T\) rounds, we want the agent to recommend a slot machine in each round. Check out &lt;a href=&quot;#3&quot;&gt;[3]&lt;/a&gt; for more details.&lt;/p&gt;
+
+&lt;h2 id=&quot;stochastic-vs-non-stochastic-setting&quot;&gt;Stochastic vs. non-stochastic setting&lt;/h2&gt;
+
+&lt;p&gt;Let’s now discuss how we define the &lt;em&gt;best&lt;/em&gt; arm. Since we’ll be talking about model &lt;em&gt;losses&lt;/em&gt; later, let’s be consistent and say that each time we pull the lever of a slot machine we observe a &lt;em&gt;loss&lt;/em&gt; instead of a &lt;em&gt;reward&lt;/em&gt;. Thus we want to find out the slot with the lowest loss. Say \(\ell_{i, t}\) denotes the loss observed on the \(t\)-th pull of the \(i\)-th slot machine.&lt;/p&gt;
+
+&lt;p&gt;In the stochastic setting each time one pulls a slot machine a loss is sampled from a fixed distribution with mean \(\mu\)&lt;label for=&quot;sn-id-5&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-5&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;We’ll use \(\mu\) to denote the mean of the distribution in the stochastic setting. For the non-stochastic setting, we’ll go with the authors and use \(\nu\) to denote the limiting loss. &lt;/span&gt; i.e.&lt;/p&gt;
+
+\[\mathbb{E}[\ell_{i, t}] = \mu_{i} \text{.}\]
+
+&lt;p&gt;In other words, if we take a large number of such losses from the \(k\)-th slot machine (or rewards, if that makes more sense) and compute the average, it would be exactly or very close to \(\mu_{k}\).&lt;/p&gt;
+
+&lt;p&gt;The non-stochastic setting, on the other hand, says that there exists a finite &lt;em&gt;limiting loss&lt;/em&gt; for each slot machine; each time one pulls the slot machine the generated loss would be a little bit closer to that &lt;em&gt;limiting loss&lt;/em&gt;. In mathematical terms it is written as&lt;/p&gt;
+
+\[\lim_{t \to \infty} \ell_{i, t} = \nu_{k} \text{.}\]
+
+&lt;p&gt;&lt;label for=&quot;tool-id-2&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;tool-id-2&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Stochastic versus the non-stochastic setting. &lt;/span&gt;&lt;/p&gt;
+
+&lt;canvas id=&quot;canvasStochReward&quot; height=&quot;300&quot; style=&quot;float:left; width:28%;&quot;&gt;&lt;/canvas&gt;
+&lt;canvas id=&quot;canvasNonStochReward&quot; height=&quot;300&quot; style=&quot;float:left; width:28%;&quot;&gt;&lt;/canvas&gt;
+
+&lt;div id=&quot;sliderContainer&quot; height=&quot;300&quot; style=&quot;width:60%; align-items:center;&quot;&gt;
+	&lt;p style=&quot;display:block;&quot;&gt;Mean/limiting loss: &lt;span id=&quot;value&quot;&gt;0.5&lt;/span&gt;&lt;/p&gt;
+	&lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;1&quot; value=&quot;0.5&quot; step=&quot;0.05&quot; id=&quot;myRange&quot; style=&quot;display:block; padding:20px 0px 20px 0px; margin:auto;&quot; /&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+	const ctxStochReward    = document.getElementById(&apos;canvasStochReward&apos;).getContext(&apos;2d&apos;);
+	const ctxNonStochReward = document.getElementById(&apos;canvasNonStochReward&apos;).getContext(&apos;2d&apos;);
+	
+	var chartStochReward    = createChart(ctxStochReward, limLoss, stochastic = true);
+	var chartNonStochReward = createChart(ctxNonStochReward, limLoss, stochastic = false);
+	
+	var slider = document.getElementById(&quot;myRange&quot;);
+	var output = document.getElementById(&quot;value&quot;);
+	slider.oninput = function() {
+		output.innerHTML = this.value;
+		limLoss = parseFloat(document.getElementById(&quot;myRange&quot;).value);
+		
+		var newMin, newMax;
+		if (limLoss &gt; 0.5) {
+			newMin = (2 * limLoss) - 1, newMax = 1;
+		}
+		else {
+			newMin = 0, newMax = 2 * limLoss;		
+		}
+		chartStochReward.data.datasets[0].function = function(x, limLoss = 0.5) { return randomInRange(newMin, newMax) };
+		
+		newStochData = generateData(chartStochReward, limLoss);
+		chartStochReward.config.data = newStochData;
+		chartStochReward.update();
+
+		newNonStochData = generateData(chartNonStochReward, limLoss);
+		chartNonStochReward.config.data = newNonStochData;
+		chartNonStochReward.update();
+	}
+&lt;/script&gt;
+
+&lt;p&gt;Do you see the resemblance between hyperparameter optimisation and the non-stochastic setting? Each hyperparameter configuration is going to yield a decreasing loss sequence and our goal is to identify the configuration with the lowest limiting loss.&lt;/p&gt;
+
+&lt;h2 id=&quot;successive-halving-algorithm&quot;&gt;Successive Halving algorithm&lt;/h2&gt;
+
+&lt;p&gt;Now we’ll be talking about the main algorithm, Successive Halving. As mentioned in the paper, Successive Halving algorithm was first introduced in &lt;a href=&quot;#5&quot;&gt;[5]&lt;/a&gt; for the stochastic setting.&lt;/p&gt;
+
+&lt;h3 id=&quot;insight&quot;&gt;Insight&lt;/h3&gt;
+
+&lt;p&gt;The authors take advantage of the following key insight: promising configurations tend to perform great even early on in the process. Therefore there is no need to keep running the bad-performing configurations; they probably suck anyway&lt;label for=&quot;sn-id-6&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-6&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;Fine print: this is merely a heuristic for pruning the bad-performing configurations. It’s not a silver bullet! Check out the sufficiency result. &lt;/span&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;basic-outline&quot;&gt;Basic outline&lt;/h3&gt;
+
+&lt;p&gt;Here we see a very basic, barebones version of the algorithm without any distracting equation or variable. By taking advantage of the previous insight, the algorithm gradually prunes (also called &lt;em&gt;early-stopping&lt;/em&gt;) some of the bad-performing arms.&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/banditsahead/assets/img/succ_halving_informal.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Algorithm 1: An informal description of the successive halving algorithm.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;demonstration&quot;&gt;Demonstration&lt;/h3&gt;
+
+&lt;p&gt;Before we go on to seeing the description of Successive Halving in full generality, let’s take a look at a small sample run. Notice how the coloured regions keep getting wider over time. This is one of the key features of Successive Halving which allows the apparently promising-looking configurations run longer.&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/banditsahead/assets/img/succ_halving_demo.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Figure 1: A demo run of the Successive Halving algorithm. Here the budget (\(B\)) is 100 and the number of arms (\(n\)) is 8. Figure source: &lt;a href=&quot;#4&quot;&gt;[4]&lt;/a&gt;.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;formal-description&quot;&gt;Formal description&lt;/h3&gt;
+
+&lt;p&gt;Behold the Successive Halving algorithm in all its glory!&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/banditsahead/assets/img/succ_halving_formal.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Algorithm 2: Successive Halving algorithm with all the bells and whistles.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s take note of some of the small details that has been added.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;The number of arms (\(n\)) needs to be specified explicitly (therefore needs to be finite)&lt;label for=&quot;sn-id-7&quot; class=&quot;margin-toggle sidenote-number&quot;&gt;&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;sn-id-7&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;sidenote&quot;&gt;This is a very big limitation. What if the hyperparameter space \(\mathcal{H}\) is continuous (which is often the case)? &lt;/span&gt;.&lt;/li&gt;
+  &lt;li&gt;After each round, as the name suggests, we prune half of the bad-performing arms. The algorithm thus runs for \(\log_{2}(n)\) many rounds (\(\lceil \log_{2}(n) \rceil\) if \(n\) is not a power of two).&lt;/li&gt;
+  &lt;li&gt;The number of pulls in the \(k\)-th round \(r_{k}\) with \(k\) (precisely, it doubles as \(k\) is incremented by one). It is due to the fact that both \(B\) and \(\log_{2}(n)\) remains constant throughout the running of the algorithm and \(S_{k}\) is halved after each round.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;theoretical-guarantees&quot;&gt;Theoretical guarantees&lt;/h2&gt;
+
+&lt;p&gt;This is going to be quite dense and math-heavy. The paper includes some nice theoretical guarantees for both Successive Halving and uniform allocation. Remind, uniform allocation pulls each arm \(\frac{B}{n}\) times and returns the best-performing arm.&lt;/p&gt;
+
+&lt;h3 id=&quot;successive-halving&quot;&gt;Successive Halving&lt;/h3&gt;
+
+&lt;p&gt;&lt;label for=&quot;th-id-1&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;th-id-1&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Theorem 1: Sufficiency condition of Successive Halving. If your total budget is more than \(z\), you can sleep tight. &lt;/span&gt;&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper&quot;&gt;
+&lt;table class=&quot;booktabs&quot; border=&quot;1px solid black;&quot;&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				Let 
+				&lt;ul&gt;
+					&lt;li&gt;\( \nu_{i} = \lim_{t \to \infty} \ell_{i, t} \text{, } \)&lt;/li&gt;
+					&lt;li&gt;\( \overline{\gamma}(t) = \max_{i = 1, \dots, n} \gamma_{i}(t) \text{, and} \)&lt;/li&gt;
+					&lt;li&gt;\( z = 2 \lceil \log_{2}(n) \rceil \max_{i = 2, \dots, n} i \left( 1 + \overline{\gamma}^{-1} \left( \frac{\nu_{i} - \nu_{1}}{2} \right) \right) \text{.} \)&lt;/li&gt;
+				&lt;/ul&gt; 
+				If the budget \( B &amp;gt; z \) then the best arm is returned from the algorithm.
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Proof idea&lt;/em&gt;: To be added.&lt;/p&gt;
+
+&lt;h3 id=&quot;uniform-allocation&quot;&gt;Uniform Allocation&lt;/h3&gt;
+
+&lt;p&gt;The paper includes both the sufficient and necessary condition of the optimality of the uniform allocation.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;th-id-2&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;th-id-2&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Theorem 2: Sufficiency condition of uniform allocation. &lt;/span&gt;&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper&quot;&gt;
+&lt;table class=&quot;booktabs&quot; border=&quot;1px solid black;&quot;&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				Let 
+				&lt;ul&gt;
+					&lt;li&gt;\( \nu_{i} = \lim_{t \to \infty} \ell_{i, t} \text{, } \)&lt;/li&gt;
+					&lt;li&gt;\( \overline{\gamma}(t) = \max_{i = 1, \dots, n} \gamma_{i}(t) \text{, and} \)&lt;/li&gt;
+					&lt;li&gt;\( z = \max_{i = 2, \dots, n} n \overline{\gamma}^{-1} \left( \frac{\nu_{i} - \nu_{1}}{2} \right) \text{.} \)&lt;/li&gt;
+				&lt;/ul&gt; 
+				If the budget \( B &amp;gt; z \) then the best arm is returned from the algorithm.
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Proof idea&lt;/em&gt;: To be added.&lt;/p&gt;
+
+&lt;p&gt;&lt;label for=&quot;th-id-3&quot; class=&quot;margin-toggle&quot;&gt; ⊕&lt;/label&gt;&lt;input type=&quot;checkbox&quot; id=&quot;th-id-3&quot; class=&quot;margin-toggle&quot; /&gt;&lt;span class=&quot;marginnote&quot;&gt;Theorem 3: Necessity condition of uniform allocation. It’s in fact the contrapositive of the necessity condition (i.e. \(B &amp;lt; z \implies\) Optimal arm not guaranteed to be identified). &lt;/span&gt;&lt;/p&gt;
+
+&lt;div class=&quot;table-wrapper&quot;&gt;
+&lt;table class=&quot;booktabs&quot; border=&quot;1px solid black;&quot;&gt;
+	&lt;tbody&gt;
+		&lt;tr&gt;
+			&lt;td&gt;
+				For any given budget \( B \) and final values \( \nu_{1} \lt \nu_{2} \leq \dots \leq \nu_{n} \) there exists a sequence of losses \( \{ \ell_{i, t} \}_{t = 1}^{\infty} \), \( i = 1, \dots, n \) such that if
+				\[ B \lt \max_{i = 2, \dots, n} n \overline{\gamma}^{-1} \left( \frac{\nu_{i} - \nu_{1}}{2} \right) \]
+				then the uniform budget allocation strategy will not return the best arm.
+			&lt;/td&gt;
+		&lt;/tr&gt;
+	&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Proof idea&lt;/em&gt;: To be added.&lt;/p&gt;
+
+&lt;p&gt;Notice that it’s both &lt;em&gt;necessary&lt;/em&gt; and &lt;em&gt;sufficient&lt;/em&gt; to have a budget (\(B\)) of \(\max_{i = 2, \dots, n} n \overline{\gamma}^{-1} \left( \frac{\nu_{i} - \nu_{1}}{2} \right)\) to ensure the identification of the best arm.&lt;/p&gt;
+
+&lt;h2 id=&quot;empirical-results&quot;&gt;Empirical Results&lt;/h2&gt;
+
+&lt;p&gt;The paper includes many empirical results; almost all of them shows a clear dominance of Successive Halving over the rest. Following figure demonstrate the superiority of Successive Halving over uniform allocation and Successive Rejects, another algorithm of similar flavour.&lt;/p&gt;
+
+&lt;figure&gt;&lt;img src=&quot;/banditsahead/assets/img/succ_halving_proof.png&quot; /&gt;&lt;figcaption class=&quot;maincolumn-figure&quot;&gt;Figure 2: Successive Halving&amp;#8217;s performance for choosing SVM hyperparameters for four different datasets.&lt;/figcaption&gt;&lt;/figure&gt;
+
+&lt;p&gt;The efficiency of Successive Halving is astounding: in the top-left figure, the test error achieved by Successive Halving at 12 seconds takes 70+ seconds for Successive Rejects to reach; uniform allocation doesn’t even come close. That’s a \(6 \times\) speedup!&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-next&quot;&gt;What’s next?&lt;/h2&gt;
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;p&gt;&lt;a id=&quot;1&quot;&gt;[1]&lt;/a&gt; 
+Shipra Agrawal and Navin Goyal.  Analysis of thompson sampling for the multi-armed bandit problem. In Conference on learning theory, pages 39–1.JMLR Workshop and Conference Proceedings, 2012.&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;2&quot;&gt;[2]&lt;/a&gt; 
+Shipra Agrawal and Navin Goyal. Further optimal regret bounds for thompson sampling. In Artificial intelligence and statistics, pages 99–107. PMLR, 2013.&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;3&quot;&gt;[3]&lt;/a&gt; 
+S ́ebastien Bubeck, R ́emi Munos, and Gilles Stoltz. Pure exploration in multi-armed bandits problems. In International conference on Algorithmic learning theory, pages 23–37. Springer, 2009.&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;4&quot;&gt;[4]&lt;/a&gt; 
+Frank Hutter, Lars Kotthoff, and Joaquin Vanschoren, editors. Automated Machine Learning: Methods, Systems, Challenges. Springer, 2018. In press, available at http://automl.org/book.&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;5&quot;&gt;[5]&lt;/a&gt; 
+Zohar Karnin, Tomer Koren, and Oren Somekh. Almost optimal exploration in multi-armed bandits. In International Conference on Machine Learning, pages 1238–1246. PMLR, 2013.&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;6&quot;&gt;[6]&lt;/a&gt; 
+Emilie Kaufmann, Nathaniel Korda, and R ́emi Munos. Thompson sampling: An asymptotically optimal finite-time analysis.  In International conference on algorithmic learning theory, pages 199–213. Springer, 2012.&lt;/p&gt;
+
+</description>
+        <pubDate>Sun, 22 Aug 2021 00:00:00 +0000</pubDate>
+        <link>/banditsahead/articles/21/NSBAIHO</link>
+        <guid isPermaLink="true">/banditsahead/articles/21/NSBAIHO</guid>
+        
+        
+        <category>post</category>
+        
       </item>
-    {% endfor %}
+    
   </channel>
 </rss>

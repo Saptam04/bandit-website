@@ -1,0 +1,2 @@
+I"€<p>How can you find the optimal value of the hyperparameter of your model? This paper addresses this problem and introduces a novel framework for modelling this task. The authors use the well-known Successive Halving algorithm for producing optimal/near-optimal solution. The paper include some nice theoretical guarantees as well as empirical results in favour of the algorithm.</p>
+:ET

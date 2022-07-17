@@ -1,17 +1,130 @@
----
-layout: full-width
-title: Home
-# Note that this index page uses a full-width layout!
----
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <h1 class="content-listing-header sans">Articles</h1>
+  <title>Home</title>
+  <meta name="description" content="Beware of bandits">
+
+  <!-- Google Fonts loaded here depending on setting in _data/options.yml true loads font, blank does not-->
+  
+    <link href='//fonts.googleapis.com/css?family=Lato:400,400italic' rel='stylesheet' type='text/css'>
+  
+  
+  <!-- Load up MathJax script if needed ... specify in /_data/options.yml file-->
+  
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: [
+      "MathMenu.js",
+      "MathZoom.js",
+      "AssistiveMML.js",
+      "a11y/accessibility-menu.js"
+    ],
+    jax: ["input/TeX", "output/CommonHTML"],
+    TeX: {
+      extensions: [
+        "AMSmath.js",
+        "AMSsymbols.js",
+        "noErrors.js",
+        "noUndefined.js",
+      ]
+    }
+  });
+</script>
+
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+ <!--   <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+  
+
+  <link rel="stylesheet" type="text/css" href="/banditsahead/css/tufte.css">
+  <!-- <link rel="stylesheet" type="text/css" href="/banditsahead/css/print.css" media="print"> -->
+
+  <link rel="canonical" href="/banditsahead/">
+
+  <link rel="alternate" type="application/rss+xml" title="Bandits Ahead!" href="/banditsahead/feed.xml" />
+</head>
+
+  <body class="full-width">
+    <!--- Header and nav template site-wide -->
+<header>
+    <nav class="group">
+	<a href="/banditsahead/"><img class="badge" src="/banditsahead/assets/img/badge_1.png" alt="CH"></a>
+	
+		
+  	
+		
+		    
+		      <a class="active" href="/banditsahead/" class="active">Home</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/banditsahead/paper/">Paper</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/banditsahead/faq/">FAQ</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/banditsahead/about/">About</a>
+		    
+	    
+  	
+		
+		    
+		      <a href="/banditsahead/css/print.css"></a>
+		    
+	    
+  	
+		
+  	
+	</nav>
+</header>
+    <article>
+        <h1 class="content-listing-header sans">Articles</h1>
   <ul class="content-listing ">
-    {% for post in site.posts %}      
+          
         <li class="listing">
           <hr class="slender">
-          <a href="{{ post.url | prepend: site.baseurl }}"><h3 class="contrast">{{ post.title }}</h3></a>
-          <br><span class="smaller">{{ post.date | date: "%B %-d, %Y" }}</span>  <br/>
-          <div>{{ post.excerpt }}</div> 
+          <a href="/banditsahead/articles/21/NSBAIHO"><h3 class="contrast">Non-stochastic Best Arm Identification and Hyperparameter Optimization</h3></a>
+          <br><span class="smaller">August 22, 2021</span>  <br/>
+          <div><p>How can you find the optimal value of the hyperparameter of your model? This paper addresses this problem and introduces a novel framework for modelling this task. The authors use the well-known Successive Halving algorithm for producing optimal/near-optimal solution. The paper include some nice theoretical guarantees as well as empirical results in favour of the algorithm.</p>
+</div> 
         </li>
-    {% endfor %}
+    
   </ul>
+    </article>
+    <span class="print-footer">Home - Saptam Bakshi</span>
+    <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="mailto:hate@spam.net"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="//github.com/GithubHandle"><span class="icon-github"></span></a>
+      </li>
+    
+      <li>
+        <a href="//www.linkedin.com/"><span class="icon-linkedin"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;SAPTAM BAKSHI</span></br> <br>
+<span>This site is created with the <a href="//github.com/clayh53/tufte-jekyll">Tufte theme</a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+  </body>
+</html>
