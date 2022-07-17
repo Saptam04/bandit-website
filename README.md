@@ -1,3 +1,3 @@
-# Bandits ahoy!
+# Bandits ahead!
 
-My website
+A website dedicated to the greatness of the bandits!
